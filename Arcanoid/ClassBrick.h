@@ -18,6 +18,8 @@ public:
     float GetPosX(void);
     float GetPosY(void);
     int GetHealth(void);
+    sf::Color GetColor(void);
+
     void SetHealth(int addition);
 
     void DrawBrick(std::shared_ptr <sf::RenderWindow> window);

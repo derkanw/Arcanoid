@@ -1,5 +1,7 @@
 #include <vector>
+#include <cmath>
 #include "ClassBall.h"
+#define DEFAULT_SPEED 10
 
 Ball::Ball(float ballRadius, float posX, float posY)
 {
@@ -14,19 +16,29 @@ Ball::Ball(float ballRadius, float posX, float posY)
 
 void Ball::SetSpeed(float newSpeedX, float newSpeedY)
 {
-    speedX = newSpeedX;
-    speedY = newSpeedY;
+    speedX *= newSpeedX;
+    speedY *= newSpeedY;
+}
+
+void Ball::StartMove(std::shared_ptr <Field> field) //переделать нормально
+{
+    if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)))
+    {
+        float default_speed = field->GetWidth();
+        speedX = DEFAULT_SPEED*(defaultX - x) / default_speed;
+        speedY = -sqrt(DEFAULT_SPEED* DEFAULT_SPEED - speedX * speedX);
+    }
 }
 
 void Ball::CollisionWithWindow(float userWindowWidth, float offsetHeight)
 {
-    if ((x <= 0) || (x >= userWindowWidth - 2 * radius))
+    if ((x < abs(speedX)) || (x > userWindowWidth - 2 * radius - speedX))
         speedX *= -1;
-    if (y <= offsetHeight)
+    if (y < offsetHeight - abs(speedY))
         speedY *= -1;
 }
 
-void Ball::BallOut(float userWindowHeight, std::shared_ptr <Bar> bar)
+int Ball::BallOut(float userWindowHeight, std::shared_ptr <Bar> bar)
 {
     if (y >= userWindowHeight)
     {
@@ -35,10 +47,12 @@ void Ball::BallOut(float userWindowHeight, std::shared_ptr <Bar> bar)
         x = defaultX;
         y = defaultY;
         bar->BallOut();
+        return -3;
     }
+    return 0;
 }
 
-bool Ball::CollisionWithShape(float shapeHeight, float shapeWidth, float shapeX, float shapeY)
+bool Ball::CollisionWithShape(float shapeHeight, float shapeWidth, float shapeX, float shapeY) //пределать попадание в углы
 {
     bool result = false;
     float leftBoarder = shapeX - 2 * radius;
@@ -46,12 +60,24 @@ bool Ball::CollisionWithShape(float shapeHeight, float shapeWidth, float shapeX,
     float upperBoarder = shapeY - 2 * radius;
     float lowerBoarder = shapeY + shapeHeight;
 
-    if ((x >= leftBoarder) && (x <= rightBoarder) && ((abs(y - upperBoarder) < abs(speedY/2)) || (abs(y - lowerBoarder) <abs(speedY/2))))
+    float speed = sqrt(speedX * speedX + speedY * speedY);
+
+    if (((upperBoarder - y >= 0) && (upperBoarder - y < speed) && (leftBoarder - x >= 0) && (leftBoarder - x < speed)) ||
+        ((upperBoarder - y >= 0) && (upperBoarder - y < speed) && (x - rightBoarder >= 0) && (x - rightBoarder < abs(speed))) ||
+        ((y - lowerBoarder >= 0) && (y - lowerBoarder < abs(speed)) && (leftBoarder - x >= 0) && (leftBoarder - x < speed)) ||
+        ((y - lowerBoarder >= 0) && (y - lowerBoarder < abs(speed)) && (x - rightBoarder >= 0) && (x - rightBoarder < abs(speed))))
+    {
+        speedX *= -1;
+        speedY *= -1;
+        result = true;
+    }
+
+    if ((x > leftBoarder) && (x < rightBoarder) && (((upperBoarder - y >=0)&&(upperBoarder - y < speedY)) || ((y - lowerBoarder >= 0) && (y - lowerBoarder < abs(speedY)))))
     {
         speedY *= -1;
         result = true;
     }
-    if ((y >= lowerBoarder) && (y <= upperBoarder) && ((abs(x - leftBoarder)< abs(speedX/2)) || (abs(x - rightBoarder) < abs(speedX/2))))
+    if ((y < lowerBoarder) && (y > upperBoarder) && (((leftBoarder - x >= 0) && (leftBoarder - x < speedX)) || ((x - rightBoarder >= 0) && (x - rightBoarder < abs(speedX)))))
     {
         speedX *= -1;
         result = true;
@@ -59,10 +85,8 @@ bool Ball::CollisionWithShape(float shapeHeight, float shapeWidth, float shapeX,
     return result;
 }
 
-bool Ball::Move(float userWindowHeight, float userWindowWidth, float offsetHeight, std::shared_ptr <Bar> bar, std::shared_ptr <Field> field)
+void Ball::Move(std::shared_ptr <Bar> bar, std::shared_ptr <Field> field)
 {
-    std::vector <Brick> bricksMatrix = field->GetBricksMatrix();
-
     x += speedX;
     y += speedY;
 
@@ -70,20 +94,8 @@ bool Ball::Move(float userWindowHeight, float userWindowWidth, float offsetHeigh
     {
         x = bar->GetPosX() + bar->GetWidth() / 2 - radius;
         y = bar->GetPosY() - 2 * radius;
+        StartMove(field);
     }
-
-    BallOut(userWindowHeight, bar);
-    CollisionWithWindow(userWindowWidth, offsetHeight);
-    CollisionWithShape(bar->GetHeight(), bar->GetWidth(), bar->GetPosX(), bar->GetPosY());
-
-    for (unsigned k = 0; k < bricksMatrix.size(); k++)
-        if (CollisionWithShape(bricksMatrix[k].GetHeight(), bricksMatrix[k].GetWidth(), bricksMatrix[k].GetPosX(), bricksMatrix[k].GetPosY()))
-        {
-            field->DeleteBrick(k);
-            break;
-        }
-
-    return true;
 }
 
 void Ball::DrawBall(std::shared_ptr <sf::RenderWindow> window)

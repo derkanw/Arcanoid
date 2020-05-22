@@ -32,8 +32,19 @@ float Bar::GetPosY(void)
     return y;
 }
 
+float Bar::GetDefaultWidth(void)
+{
+    return defaultWidth;
+}
+
+void Bar::SetWidth(float newWidth)
+{
+    width = newWidth;
+}
+
 void Bar::BallOut(void)
 {
+    width = defaultWidth;
     x = defaultX;
 }
 

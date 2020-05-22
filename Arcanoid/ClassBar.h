@@ -15,8 +15,11 @@ public:
 
     float GetHeight(void);
     float GetWidth(void);
+    float GetDefaultWidth(void);
     float GetPosX(void);
     float GetPosY(void);
+
+    void SetWidth(float newWidth);
 
     void Move(float userWindowWidth);
     void BallOut(void);

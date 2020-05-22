@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bonus.cpp" />
     <ClCompile Include="ClassBall.cpp" />
     <ClCompile Include="ClassBar.cpp" />
     <ClCompile Include="ClassBrick.cpp" />
@@ -139,6 +140,7 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bonus.h" />
     <ClInclude Include="ClassBall.h" />
     <ClInclude Include="ClassBar.h" />
     <ClInclude Include="ClassBrick.h" />

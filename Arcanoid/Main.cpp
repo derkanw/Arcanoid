@@ -1,13 +1,14 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <vector>
+#include <string>
 #include "ClassField.h"
 #include "ClassBar.h"
 #include "ClassBall.h"
+#include "ClassBrick.h"
 
 float userWindowWidth = 500, userWindowHeight = 600;
-unsigned score = 0;
-bool moving = false;
+int score = 0;
 
 float fieldWindowWidth = userWindowWidth;
 float fieldWindowHeight = 2 * userWindowHeight / 5;
@@ -33,8 +34,8 @@ void CreateText(std::shared_ptr <sf::RenderWindow> window)
     text.setFont(font);
     text.setCharacterSize((unsigned)userWindowHeight/20);
     text.setPosition(userWindowWidth/50, userWindowHeight/30);
-
     text.setString("Score: " + std::to_string(score));
+
     window->draw(text);
 }
 
@@ -55,8 +56,6 @@ int main()
     std::shared_ptr <Ball> ball;
     ball = std::make_shared <Ball>(ballRadius, ballX, ballY);
 
-    ball->SetSpeed(10.f, -10.f);
-
     while (window->isOpen())
     {
         sf::Event event;
@@ -70,7 +69,24 @@ int main()
 
         bar->Move(userWindowWidth);
 
-        moving = ball->Move(userWindowHeight, userWindowWidth, offsetHeight, bar, field);
+        ball->Move(bar, field);
+
+        score += ball->BallOut(userWindowHeight, bar);
+        ball-> CollisionWithWindow(userWindowWidth, offsetHeight);
+        ball->CollisionWithShape(bar->GetHeight(), bar->GetWidth(), bar->GetPosX(), bar->GetPosY());
+
+        std::vector <std::shared_ptr<Brick>> bricksMatrix = field->GetBricksMatrix();
+        for (unsigned k = 0; k < bricksMatrix.size(); k++)
+            if (ball->CollisionWithShape(bricksMatrix[k]->GetHeight(), bricksMatrix[k]->GetWidth(), bricksMatrix[k]->GetPosX(), bricksMatrix[k]->GetPosY()))
+            {
+                if (bricksMatrix[k]->GetColor() == sf::Color::Cyan)
+                    ball->SetSpeed(1.5, 1.5);
+                score += field->DeleteBrick(k);
+                break;
+            }
+
+
+        field->BonusesWork(window, userWindowHeight, bar, ball);
 
         field->DrawField(window);
         ball->DrawBall(window);

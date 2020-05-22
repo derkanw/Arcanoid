@@ -35,6 +35,11 @@ int Brick::GetHealth(void)
     return health;
 }
 
+sf::Color Brick::GetColor(void)
+{
+    return color;
+}
+
 void Brick::SetHealth(int addition)
 {
     health += addition;

@@ -18,10 +18,11 @@ public:
 
     void SetSpeed(float newSpeedX, float newSpeedY);
 
-    void BallOut(float userWindowHeight, std::shared_ptr <Bar> bar);
+    int BallOut(float userWindowHeight, std::shared_ptr <Bar> bar);
     void CollisionWithWindow(float userWindowWidth, float offsetHeight);
     bool CollisionWithShape(float shapeHeight, float shapeWidth, float shapeX, float shapeY);
-    bool Move(float userWindowHeight, float userWindowWidth, float offsetHeight, std::shared_ptr <Bar> bar, std::shared_ptr <Field> field);
+    void StartMove(std::shared_ptr <Field> field);
+    void Move(std::shared_ptr <Bar> bar, std::shared_ptr <Field> field);
     
     void DrawBall(std::shared_ptr <sf::RenderWindow> window);
 };
