@@ -60,3 +60,18 @@ void ChangeBall::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
         break;
     }
 }
+
+void BallStick::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
+{
+    bar->SetBallStick(3);
+}
+
+void BallBottom::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
+{
+    ball->SetBallBottom(true);
+}
+
+void RandomTrigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
+{
+   // ball->Set
+}

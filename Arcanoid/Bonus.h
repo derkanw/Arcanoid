@@ -34,8 +34,35 @@ public:
 class ChangeBall :public Bonus
 {
 public:
-    ChangeBall(float posX, float posY) :Bonus(posX, posY, sf::Color::Magenta, 1) {}
+    ChangeBall(float posX, float posY) :Bonus(posX, posY, sf::Color::Yellow, 1) {}
     ~ChangeBall(void) {}
+
+    void Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball) override;
+};
+
+class BallStick :public Bonus
+{
+public:
+    BallStick(float posX, float posY) :Bonus(posX, posY, sf::Color::Yellow, 2) {}
+    ~BallStick(void) {}
+
+    void Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball) override;
+};
+
+class BallBottom :public Bonus
+{
+public:
+   BallBottom(float posX, float posY) :Bonus(posX, posY, sf::Color::Yellow, 3) {}
+   ~BallBottom(void) {}
+
+    void Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball) override;
+};
+
+class RandomPath :public Bonus
+{
+public:
+    RandomPath(float posX, float posY) :Bonus(posX, posY, sf::Color::Yellow, 4) {}
+    ~RandomPath(void) {}
 
     void Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball) override;
 };

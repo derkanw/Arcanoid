@@ -10,6 +10,7 @@ Bar::Bar(float barHeight, float barWidth, float posX, float posY)
     x = posX;
     defaultX = posX;
     y = posY;
+    ballStick = 0;
 }
 
 float Bar::GetHeight(void)
@@ -37,15 +38,26 @@ float Bar::GetDefaultWidth(void)
     return defaultWidth;
 }
 
+unsigned Bar::GetBallStick(void)
+{
+    return ballStick;
+}
+
 void Bar::SetWidth(float newWidth)
 {
     width = newWidth;
+}
+
+void Bar::SetBallStick(unsigned newBallStick)
+{
+    ballStick += newBallStick;
 }
 
 void Bar::BallOut(void)
 {
     width = defaultWidth;
     x = defaultX;
+    ballStick = 0;
 }
 
 void Bar::Move(float userWindowWidth)

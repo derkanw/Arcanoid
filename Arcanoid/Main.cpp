@@ -69,15 +69,16 @@ int main()
 
         bar->Move(userWindowWidth);
 
-        ball->Move(bar, field);
+        ball->Move(bar, userWindowWidth);
 
         score += ball->BallOut(userWindowHeight, bar);
         ball-> CollisionWithWindow(userWindowWidth, offsetHeight);
-        ball->CollisionWithShape(bar->GetHeight(), bar->GetWidth(), bar->GetPosX(), bar->GetPosY());
+        if (ball->CollisionWithShape(bar->GetHeight(), bar->GetWidth(), bar->GetPosX(), bar->GetPosY(), bar->GetBallStick()) == 2)
+            bar->SetBallStick(-1);
 
         std::vector <std::shared_ptr<Brick>> bricksMatrix = field->GetBricksMatrix();
         for (unsigned k = 0; k < bricksMatrix.size(); k++)
-            if (ball->CollisionWithShape(bricksMatrix[k]->GetHeight(), bricksMatrix[k]->GetWidth(), bricksMatrix[k]->GetPosX(), bricksMatrix[k]->GetPosY()))
+            if (ball->CollisionWithShape(bricksMatrix[k]->GetHeight(), bricksMatrix[k]->GetWidth(), bricksMatrix[k]->GetPosX(), bricksMatrix[k]->GetPosY())==1)
             {
                 if (bricksMatrix[k]->GetColor() == sf::Color::Cyan)
                     ball->SetSpeed(1.5, 1.5);

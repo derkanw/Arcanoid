@@ -12,6 +12,7 @@ Ball::Ball(float ballRadius, float posX, float posY)
     defaultY = posY;
     speedX = 0;
     speedY = 0;
+    ballBottom = false;
 }
 
 void Ball::SetSpeed(float newSpeedX, float newSpeedY)
@@ -20,11 +21,16 @@ void Ball::SetSpeed(float newSpeedX, float newSpeedY)
     speedY *= newSpeedY;
 }
 
-void Ball::StartMove(std::shared_ptr <Field> field) //переделать нормально
+void Ball::SetBallBottom(bool value)
+{
+    ballBottom = value;
+}
+
+void Ball::StartMove(float userWindowWidth) //переделать нормально
 {
     if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) || (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)))
     {
-        float default_speed = field->GetWidth();
+        float default_speed = userWindowWidth;
         speedX = DEFAULT_SPEED*(defaultX - x) / default_speed;
         speedY = -sqrt(DEFAULT_SPEED* DEFAULT_SPEED - speedX * speedX);
     }
@@ -40,21 +46,29 @@ void Ball::CollisionWithWindow(float userWindowWidth, float offsetHeight)
 
 int Ball::BallOut(float userWindowHeight, std::shared_ptr <Bar> bar)
 {
-    if (y >= userWindowHeight)
+    if (y+2*radius>= userWindowHeight)
     {
-        speedX = 0;
-        speedY = 0;
-        x = defaultX;
-        y = defaultY;
-        bar->BallOut();
-        return -3;
+        if (!ballBottom)
+        {
+            speedX = 0;
+            speedY = 0;
+            x = defaultX;
+            y = defaultY;
+            bar->BallOut();
+            return -3;
+        }
+        else
+        {
+            speedY *= -1;
+            ballBottom = false;
+        }
     }
     return 0;
 }
 
-bool Ball::CollisionWithShape(float shapeHeight, float shapeWidth, float shapeX, float shapeY) //пределать попадание в углы
+unsigned Ball::CollisionWithShape(float shapeHeight, float shapeWidth, float shapeX, float shapeY, unsigned ballStick) //пределать попадание в углы
 {
-    bool result = false;
+    unsigned result = 0;
     float leftBoarder = shapeX - 2 * radius;
     float rightBoarder = shapeX + shapeWidth;
     float upperBoarder = shapeY - 2 * radius;
@@ -67,34 +81,66 @@ bool Ball::CollisionWithShape(float shapeHeight, float shapeWidth, float shapeX,
         ((y - lowerBoarder >= 0) && (y - lowerBoarder < abs(speed)) && (leftBoarder - x >= 0) && (leftBoarder - x < speed)) ||
         ((y - lowerBoarder >= 0) && (y - lowerBoarder < abs(speed)) && (x - rightBoarder >= 0) && (x - rightBoarder < abs(speed))))
     {
-        speedX *= -1;
-        speedY *= -1;
-        result = true;
+        if (ballStick > 0)
+        {
+            speedX = 0;
+            speedY = 0;
+            subX = x;
+            result=2;
+        }
+        else
+        {
+            speedX *= -1;
+            speedY *= -1;
+            result = 1;
+        }
     }
 
     if ((x > leftBoarder) && (x < rightBoarder) && (((upperBoarder - y >=0)&&(upperBoarder - y < speedY)) || ((y - lowerBoarder >= 0) && (y - lowerBoarder < abs(speedY)))))
     {
-        speedY *= -1;
-        result = true;
+        if (ballStick > 0)
+        {
+            speedX = 0;
+            speedY = 0;
+            subX = x;
+            result =2;
+        }
+        else
+        {
+            speedY *= -1;
+            result = 1;
+        }
     }
     if ((y < lowerBoarder) && (y > upperBoarder) && (((leftBoarder - x >= 0) && (leftBoarder - x < speedX)) || ((x - rightBoarder >= 0) && (x - rightBoarder < abs(speedX)))))
     {
-        speedX *= -1;
-        result = true;
+        if (ballStick > 0)
+        {
+            speedX = 0;
+            speedY = 0;
+            subX = x;
+            result= 2;
+        }
+        else
+        {
+            speedX *= -1;
+            result = 1;
+        }
     }
     return result;
 }
 
-void Ball::Move(std::shared_ptr <Bar> bar, std::shared_ptr <Field> field)
+void Ball::Move(std::shared_ptr <Bar> bar, float userWindowWidth)
 {
     x += speedX;
     y += speedY;
 
     if ((speedX == 0) && (speedY == 0))
     {
-        x = bar->GetPosX() + bar->GetWidth() / 2 - radius;
+        if (bar->GetBallStick() > 0)
+            x = bar->GetPosX() + abs(subX- bar->GetPosX());
+        else x = bar->GetPosX() + bar->GetWidth() / 2 - radius;
         y = bar->GetPosY() - 2 * radius;
-        StartMove(field);
+        StartMove(userWindowWidth);
     }
 }
 

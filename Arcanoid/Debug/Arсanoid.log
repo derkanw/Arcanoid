@@ -1,41 +1,6 @@
 ﻿  Bonus.cpp
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.h(18,34): error C2065: Bonus: необъявленный идентификатор
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.h(18,23): error C2923: std::shared_ptr: "Bonus" не является допустимым аргументом типа шаблон для параметра "_Ty"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.h(18,23): error C3203: "shared_ptr": неспециализированный класс шаблон нельзя использовать в качестве аргумента шаблон для параметра шаблон "_Ty", требуется действительный тип
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.h(35,133): error C2065: Ball: необъявленный идентификатор
   ClassBall.cpp
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.h(35,121): error C2923: std::shared_ptr: "Ball" не является допустимым аргументом типа шаблон для параметра "_Ty"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\Bonus.h(18,70): error C2065: Ball: необъявленный идентификатор
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\Bonus.h(18,58): error C2923: std::shared_ptr: "Ball" не является допустимым аргументом типа шаблон для параметра "_Ty"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\Bonus.h(20,83): error C2065: Ball: необъявленный идентификатор
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\Bonus.h(20,71): error C2923: std::shared_ptr: "Ball" не является допустимым аргументом типа шаблон для параметра "_Ty"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\Bonus.h(31,62): error C2065: Ball: необъявленный идентификатор
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\Bonus.h(31,50): error C2923: std::shared_ptr: "Ball" не является допустимым аргументом типа шаблон для параметра "_Ty"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\Bonus.h(40,62): error C2065: Ball: необъявленный идентификатор
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\Bonus.h(40,50): error C2923: std::shared_ptr: "Ball" не является допустимым аргументом типа шаблон для параметра "_Ty"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.h(35,133): error C2065: Ball: необъявленный идентификатор
-  ClassBar.cpp
-  ClassBrick.cpp
   ClassField.cpp
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.h(35,121): error C2923: std::shared_ptr: "Ball" не является допустимым аргументом типа шаблон для параметра "_Ty"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassBall.h(24,37): error C2065: Field: необъявленный идентификатор
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassBall.h(24,25): error C2923: std::shared_ptr: "Field" не является допустимым аргументом типа шаблон для параметра "_Ty"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassBall.h(25,59): error C2065: Field: необъявленный идентификатор
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassBall.h(25,47): error C2923: std::shared_ptr: "Field" не является допустимым аргументом типа шаблон для параметра "_Ty"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.cpp(93,1): error C2511: void Field::BonusesWork(std::shared_ptr<sf::RenderWindow>,float,std::shared_ptr<Bar>): перегруженная функция-член не найдена в "Field"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.h(9): message : см. объявление "Field"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.cpp(96,24): error C2597: недопустимая ссылка на нестатический член "Field::bonusesMatrix"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.cpp(96,24): error C3867: "Field::bonusesMatrix": нестандартный синтаксис; используйте "&", чтобы создать указатель на член
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.cpp(96,24): error C2109: для индекса требуется массив или указатель
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.cpp(97,12): error C2597: недопустимая ссылка на нестатический член "Field::bonusesMatrix"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.cpp(97,12): error C3867: "Field::bonusesMatrix": нестандартный синтаксис; используйте "&", чтобы создать указатель на член
   Main.cpp
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassField.cpp(97,12): error C2109: для индекса требуется массив или указатель
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassBall.h(24,37): error C2065: Field: необъявленный идентификатор
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassBall.h(24,25): error C2923: std::shared_ptr: "Field" не является допустимым аргументом типа шаблон для параметра "_Ty"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassBall.h(25,59): error C2065: Field: необъявленный идентификатор
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassBall.h(25,47): error C2923: std::shared_ptr: "Field" не является допустимым аргументом типа шаблон для параметра "_Ty"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\Main.cpp(72,30): error C2664: "void Ball::Move(std::shared_ptr<Bar>,std::shared_ptr)": невозможно преобразовать аргумент 2 из "std::shared_ptr<Field>" в "std::shared_ptr"
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\Main.cpp(72,25): message : Для выполнения данного преобразования нет доступного оператора преобразования, определенного пользователем, или вызов оператора невозможен
   Создание кода...
-D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\ClassBall.h(25,10): message : см. объявление "Ball::Move"
+  Arсanoid.vcxproj -> D:\Desktop\Учеба\Лабы C++\Курсовой проект\Arcanoid\Debug\Arcanoid.exe

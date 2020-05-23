@@ -62,7 +62,7 @@ int Field::DeleteBrick(unsigned number)
     {
         if (rand() % 100 < CHANCE_OF_BONUS)
         {
-            switch (rand() % 2)
+            switch (2)//rand() % 4)
             {
             case 0:
                 bonusesMatrix.push_back(std::make_shared<ChangeBar>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight()));
@@ -71,10 +71,10 @@ int Field::DeleteBrick(unsigned number)
                 bonusesMatrix.push_back(std::make_shared<ChangeBall>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight()));
                 break;
             case 2:
-                //bonusesMatrix.push_back(std::make_shared<Bonus>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight(), sf::Color::Yellow, 1));
+                bonusesMatrix.push_back(std::make_shared<BallStick>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight()));
                 break;
             case 3:
-                //bonusesMatrix.push_back(std::make_shared<Bonus>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight(), sf::Color::Yellow, 0));
+                bonusesMatrix.push_back(std::make_shared<BallBottom>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight()));
                 break;
             case 4:
                 //bonusesMatrix.push_back(std::make_shared<Bonus>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight(), sf::Color::Yellow, 0));

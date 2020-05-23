@@ -8,6 +8,7 @@ private:
     float defaultWidth;
     float x;
     float defaultX, y;
+    unsigned ballStick;
 
 public:
     Bar(float barHeight, float barWidth, float posX, float posY);
@@ -18,8 +19,10 @@ public:
     float GetDefaultWidth(void);
     float GetPosX(void);
     float GetPosY(void);
+    unsigned GetBallStick(void);
 
     void SetWidth(float newWidth);
+    void SetBallStick(unsigned newBallStick);
 
     void Move(float userWindowWidth);
     void BallOut(void);
