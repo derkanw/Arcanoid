@@ -9,8 +9,10 @@ Field::Field(float fieldWindowHeight, float fieldWindowWidth, unsigned numberBri
     width = fieldWindowWidth;
     bricksInRow = numberBricksInRow;
     bricksInColumn = numberBricksInColumn;
+    offset = offsetHeight;
+    numberMovingBricks = 0;
 
-    GenerateField(offsetHeight);
+    GenerateField();
 }
 
 void Field::SetBrickType(sf::Color& brickColor, int& brickHealth)
@@ -38,7 +40,7 @@ void Field::SetBrickType(sf::Color& brickColor, int& brickHealth)
     }
 }
 
-void Field::GenerateField(float offsetHeight)
+void Field::GenerateField(void)
 {
     float brickHeight = height / bricksInColumn, brickWidth = width / bricksInRow;
     float posX = 0, posY = 0;
@@ -49,57 +51,78 @@ void Field::GenerateField(float offsetHeight)
         for (unsigned j = 0; j < bricksInRow; j++)
         {
             posX = j * brickWidth;
-            posY = offsetHeight + i * brickHeight;
+            posY = offset + i * brickHeight;
             SetBrickType(brickColor, brickHealth);
             bricksMatrix.push_back(std::make_shared<Brick>( brickHeight, brickWidth, posX, posY, brickHealth, brickColor ));
         }
 }
 
-int Field::DeleteBrick(unsigned number)
+int Field::DeleteBrick(unsigned number, float& bonusX, float& bonusY)
 {
     bricksMatrix[number]->SetHealth(MINUS_HEALTH);
     if (bricksMatrix[number]->GetHealth() == 0)
     {
         if (rand() % 100 < CHANCE_OF_BONUS)
         {
-            switch (2)//rand() % 4)
-            {
-            case 0:
-                bonusesMatrix.push_back(std::make_shared<ChangeBar>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight()));
-                break;
-            case 1:
-                bonusesMatrix.push_back(std::make_shared<ChangeBall>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight()));
-                break;
-            case 2:
-                bonusesMatrix.push_back(std::make_shared<BallStick>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight()));
-                break;
-            case 3:
-                bonusesMatrix.push_back(std::make_shared<BallBottom>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight()));
-                break;
-            case 4:
-                //bonusesMatrix.push_back(std::make_shared<Bonus>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight(), sf::Color::Yellow, 0));
-                break;
-            case 5:
-                //bonusesMatrix.push_back(std::make_shared<Bonus>(bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2, bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight(), sf::Color::Yellow, 0));
-                break;
-            }
+            bonusX = bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2;
+            bonusY = bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight();
         }
+        if (bricksMatrix[number]->GetColor() == sf::Color::Magenta)
+            numberMovingBricks -= 1;
         bricksMatrix.erase(bricksMatrix.begin() + number);
     }
     return 1;
 }
 
-void Field::BonusesWork(std::shared_ptr <sf::RenderWindow> window, float userWindowHeight, std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
+void Field::MoveAllBricks(void)
 {
-    for (unsigned k = 0; k < bonusesMatrix.size(); k++)
+    for (unsigned k = 0; k < bricksMatrix.size(); k++)
+        bricksMatrix[k]->Move(width);
+}
+
+bool Field::CheckNewX(float posX, float posY)
+{
+    for (unsigned k = 0; k < bricksMatrix.size(); k++)
+        if (bricksMatrix[k]->GetPosY() == posY)
+            if (posX >= bricksMatrix[k]->GetPosX() && posX <= bricksMatrix[k]->GetPosX() + bricksMatrix[k]->GetWidth() || posX >= width - bricksMatrix[k]->GetWidth())
+                return false;
+    return true;
+}
+
+void Field::SetMovingBrick(void)
+{
+    float randomX;
+    float y = (offset + height)*(float)1.03;
+    float brickWidth = width / bricksInRow;
+    float brickHeight = height / bricksInColumn;
+
+    if (numberMovingBricks < bricksInRow)
     {
-        bonusesMatrix[k]->DrawBonus(window);
-        if (bonusesMatrix[k]->Move(userWindowHeight, bar, ball))
-        {
-            bonusesMatrix.erase(bonusesMatrix.begin() + k);
-            break;
-        }
+        do
+            randomX = (float)(rand() % (int)width);
+        while (!CheckNewX(randomX, y));
+
+        bricksMatrix.push_back(std::make_shared <MovingBrick>(brickWidth, brickHeight, randomX, y));
+        numberMovingBricks += 1;
     }
+}
+
+void Field::BricksCollision(void)
+{
+    for (unsigned i = 0; i < bricksMatrix.size() - 1; i++)
+        for (unsigned j = 1; j < bricksMatrix.size(); j++)
+            if (bricksMatrix[i]->GetColor() == sf::Color::Magenta && bricksMatrix[j]->GetColor() == sf::Color::Magenta)
+                if ((fabs(bricksMatrix[i]->GetPosX() - (bricksMatrix[j]->GetPosX() + bricksMatrix[j]->GetWidth())) < bricksMatrix[i]->GetSpeedX())||
+                    (fabs(bricksMatrix[i]->GetPosX() + bricksMatrix[i]->GetWidth() - bricksMatrix[j]->GetPosX()) < bricksMatrix[i]->GetSpeedX()))
+                    bricksMatrix[j]->SetSpeedX(-1);
+}
+
+bool Field::EndOfGame(void)
+{
+    for (unsigned k = 0; k < bricksMatrix.size(); k++)
+        if (bricksMatrix[k]->GetColor() != sf::Color::Red)
+            return false;
+    return true;
 }
 
 std::vector <std::shared_ptr<Brick>> Field::GetBricksMatrix(void)

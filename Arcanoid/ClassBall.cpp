@@ -2,6 +2,7 @@
 #include <cmath>
 #include "ClassBall.h"
 #define DEFAULT_SPEED 10
+#define CHANCE_OF_RANDOM 15
 
 Ball::Ball(float ballRadius, float posX, float posY)
 {
@@ -12,7 +13,9 @@ Ball::Ball(float ballRadius, float posX, float posY)
     defaultY = posY;
     speedX = 0;
     speedY = 0;
+    barOffset = 0;
     ballBottom = false;
+    randomPath = false;
 }
 
 void Ball::SetSpeed(float newSpeedX, float newSpeedY)
@@ -24,6 +27,21 @@ void Ball::SetSpeed(float newSpeedX, float newSpeedY)
 void Ball::SetBallBottom(bool value)
 {
     ballBottom = value;
+}
+
+void Ball::SetBarOffset(float newOffset)
+{
+    barOffset = newOffset;
+}
+
+float Ball::GetPosX(void)
+{
+    return x;
+}
+
+void Ball::SetRandomPath(float newRandomPath)
+{
+    randomPath = newRandomPath;
 }
 
 void Ball::StartMove(float userWindowWidth) //переделать нормально
@@ -54,6 +72,7 @@ int Ball::BallOut(float userWindowHeight, std::shared_ptr <Bar> bar)
             speedY = 0;
             x = defaultX;
             y = defaultY;
+            randomPath = 0;
             bar->BallOut();
             return -3;
         }
@@ -85,7 +104,6 @@ unsigned Ball::CollisionWithShape(float shapeHeight, float shapeWidth, float sha
         {
             speedX = 0;
             speedY = 0;
-            subX = x;
             result=2;
         }
         else
@@ -102,7 +120,6 @@ unsigned Ball::CollisionWithShape(float shapeHeight, float shapeWidth, float sha
         {
             speedX = 0;
             speedY = 0;
-            subX = x;
             result =2;
         }
         else
@@ -117,7 +134,6 @@ unsigned Ball::CollisionWithShape(float shapeHeight, float shapeWidth, float sha
         {
             speedX = 0;
             speedY = 0;
-            subX = x;
             result= 2;
         }
         else
@@ -131,13 +147,19 @@ unsigned Ball::CollisionWithShape(float shapeHeight, float shapeWidth, float sha
 
 void Ball::Move(std::shared_ptr <Bar> bar, float userWindowWidth)
 {
+    if ((randomPath) && ((rand() % 100) < CHANCE_OF_RANDOM))
+    {
+        speedX *= (float)pow(-1, rand() % 2);
+        speedY *= (float)pow(-1, rand() % 2);
+        randomPath = false;
+    }
     x += speedX;
     y += speedY;
 
     if ((speedX == 0) && (speedY == 0))
     {
         if (bar->GetBallStick() > 0)
-            x = bar->GetPosX() + abs(subX- bar->GetPosX());
+            x = bar->GetPosX() + barOffset;
         else x = bar->GetPosX() + bar->GetWidth() / 2 - radius;
         y = bar->GetPosY() - 2 * radius;
         StartMove(userWindowWidth);

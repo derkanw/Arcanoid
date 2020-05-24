@@ -10,13 +10,13 @@ Bonus::Bonus(float posX, float posY, sf::Color bonusColor, unsigned bonysType)
     color = bonusColor;
 }
 
-bool Bonus::Move(float userWindowHeight, std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
+bool Bonus::Move(float userWindowHeight, std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
 {
     bool result = false;
     y += 10;
     if ((x + 2 * radius >= bar->GetPosX()) && (x <= bar->GetPosX() + bar->GetWidth()) && (y + 2 * radius >= bar->GetPosY()) && (y <= bar->GetPosY() + bar->GetHeight()))
     {
-        Trigger(bar, ball);
+        Trigger(bar, ball, field);
         result = true;
     }
     else if (y + 10 >= userWindowHeight)
@@ -33,7 +33,7 @@ void Bonus::DrawBonus(std::shared_ptr <sf::RenderWindow> window)
     window->draw(circle);
 }
 
-void ChangeBar::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
+void ChangeBar::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
 {
     switch (rand() % 2)
     {
@@ -48,7 +48,7 @@ void ChangeBar::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
     }
 }
 
-void ChangeBall::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
+void ChangeBall::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
 {
     switch (rand() % 2)
     {
@@ -61,17 +61,22 @@ void ChangeBall::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
     }
 }
 
-void BallStick::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
+void BallStick::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
 {
     bar->SetBallStick(3);
 }
 
-void BallBottom::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
+void BallBottom::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
 {
     ball->SetBallBottom(true);
 }
 
-void RandomTrigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball)
+void RandomPath::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
 {
-   // ball->Set
+    ball->SetRandomPath(true);
+}
+
+void MovingBrickBonus::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
+{
+    field->SetMovingBrick();
 }

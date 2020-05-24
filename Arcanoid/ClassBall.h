@@ -10,16 +10,21 @@ private:
     float x, y;
     float defaultX, defaultY;
     float speedX, speedY;
-    float subX;
+    float barOffset;
 
     bool ballBottom;
+    bool randomPath;
 
 public:
     Ball(float ballRadius, float posX, float posY);
     ~Ball(void) {}
 
+    float GetPosX(void);
+
     void SetSpeed(float newSpeedX, float newSpeedY);
     void SetBallBottom(bool value);
+    void SetBarOffset(float newOffset);
+    void SetRandomPath(float newRandomPath);
 
     int BallOut(float userWindowHeight, std::shared_ptr <Bar> bar);
     void CollisionWithWindow(float userWindowWidth, float offsetHeight);

@@ -1,4 +1,5 @@
 #include "ClassBrick.h"
+#define BRICK_SPEED 10
 
 Brick::Brick(float brickHeight, float brickWidth, float posX, float posY, int brickHealth, sf::Color brickColor)
 {
@@ -55,4 +56,26 @@ void Brick::DrawBrick(std::shared_ptr <sf::RenderWindow> window)
     shape.setOutlineColor(sf::Color::Black);
 
     window->draw(shape);
+}
+
+MovingBrick::MovingBrick(float brickHeight, float brickWidth, float posX, float posY) :Brick(brickHeight, brickWidth, posX, posY, 3, sf::Color::Magenta)
+{
+    speedX = BRICK_SPEED * (float)pow(-1, rand() % 2);
+}
+
+void MovingBrick::Move(float userWindowWidth)
+{
+    if (x <= 0 || x + width >= userWindowWidth)
+        speedX *= -1;
+    x += speedX;
+}
+
+float MovingBrick::GetSpeedX(void)
+{
+    return speedX;
+}
+
+void MovingBrick::SetSpeedX(float newSpeedX)
+{
+    speedX *= newSpeedX;
 }
