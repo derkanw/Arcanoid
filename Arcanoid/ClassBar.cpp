@@ -1,6 +1,6 @@
 #include <memory>
 #include "ClassBar.h"
-#define SPEED_BAR 10
+#define SPEED_BAR 1
 
 Bar::Bar(float barHeight, float barWidth, float posX, float posY)
 {

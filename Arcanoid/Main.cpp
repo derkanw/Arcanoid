@@ -26,7 +26,7 @@ float barWidth = userWindowWidth / 4;
 float barX = ballX - barWidth / 2 + ballRadius;
 float barY = ballY + 2 * ballRadius;
 
-void BonusesWork(std::shared_ptr <sf::RenderWindow> window, std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field, std::vector <std::shared_ptr<Bonus>> bonusesMatrix)
+void BonusesWork(std::shared_ptr <sf::RenderWindow> window, std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field, std::vector <std::shared_ptr<Bonus>> &bonusesMatrix)
 {
     for (unsigned k = 0; k < bonusesMatrix.size(); k++)
     {
@@ -59,7 +59,7 @@ int main()
 
     std::shared_ptr <sf::RenderWindow> window;
     window = std::make_shared<sf::RenderWindow>(sf::VideoMode((unsigned)userWindowWidth, (unsigned)userWindowHeight), "Arcanoid");
-    window->setFramerateLimit(10);
+    window->setFramerateLimit(100);
 
     std::shared_ptr <Field> field;
     field = std::make_shared<Field>(fieldWindowHeight, fieldWindowWidth, numberBricksInRow, numberBricksInColumn, offsetHeight);

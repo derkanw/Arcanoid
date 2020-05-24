@@ -13,13 +13,13 @@ Bonus::Bonus(float posX, float posY, sf::Color bonusColor, unsigned bonysType)
 bool Bonus::Move(float userWindowHeight, std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
 {
     bool result = false;
-    y += 10;
+    y += 1;
     if ((x + 2 * radius >= bar->GetPosX()) && (x <= bar->GetPosX() + bar->GetWidth()) && (y + 2 * radius >= bar->GetPosY()) && (y <= bar->GetPosY() + bar->GetHeight()))
     {
         Trigger(bar, ball, field);
         result = true;
     }
-    else if (y + 10 >= userWindowHeight)
+    else if (y + 1 >= userWindowHeight)
         result = true;
     return result;
 }

@@ -1,5 +1,5 @@
 #include "ClassBrick.h"
-#define BRICK_SPEED 10
+#define BRICK_SPEED 0.5
 
 Brick::Brick(float brickHeight, float brickWidth, float posX, float posY, int brickHealth, sf::Color brickColor)
 {

@@ -84,7 +84,7 @@ bool Field::CheckNewX(float posX, float posY)
 {
     for (unsigned k = 0; k < bricksMatrix.size(); k++)
         if (bricksMatrix[k]->GetPosY() == posY)
-            if (posX >= bricksMatrix[k]->GetPosX() && posX <= bricksMatrix[k]->GetPosX() + bricksMatrix[k]->GetWidth() || posX >= width - bricksMatrix[k]->GetWidth())
+            if (posX - bricksMatrix[k]->GetPosX() && posX <= bricksMatrix[k]->GetPosX() + bricksMatrix[k]->GetWidth() || posX >= width - bricksMatrix[k]->GetWidth())
                 return false;
     return true;
 }
@@ -92,29 +92,29 @@ bool Field::CheckNewX(float posX, float posY)
 void Field::SetMovingBrick(void)
 {
     float randomX;
-    float y = (offset + height)*(float)1.03;
+    float y = offset + height*(float)1.03;
     float brickWidth = width / bricksInRow;
     float brickHeight = height / bricksInColumn;
 
-    if (numberMovingBricks < bricksInRow)
+    if (numberMovingBricks < bricksInRow/2)
     {
         do
-            randomX = (float)(rand() % (int)width);
+            randomX = (float)(rand() % (int)(width - brickWidth));
         while (!CheckNewX(randomX, y));
 
-        bricksMatrix.push_back(std::make_shared <MovingBrick>(brickWidth, brickHeight, randomX, y));
+        bricksMatrix.push_back(std::make_shared <MovingBrick>(brickHeight, brickWidth, randomX, y));
         numberMovingBricks += 1;
     }
 }
 
 void Field::BricksCollision(void)
 {
-    for (unsigned i = 0; i < bricksMatrix.size() - 1; i++)
-        for (unsigned j = 1; j < bricksMatrix.size(); j++)
-            if (bricksMatrix[i]->GetColor() == sf::Color::Magenta && bricksMatrix[j]->GetColor() == sf::Color::Magenta)
-                if ((fabs(bricksMatrix[i]->GetPosX() - (bricksMatrix[j]->GetPosX() + bricksMatrix[j]->GetWidth())) < bricksMatrix[i]->GetSpeedX())||
-                    (fabs(bricksMatrix[i]->GetPosX() + bricksMatrix[i]->GetWidth() - bricksMatrix[j]->GetPosX()) < bricksMatrix[i]->GetSpeedX()))
-                    bricksMatrix[j]->SetSpeedX(-1);
+    for (unsigned i = 0; i < bricksMatrix.size(); i++)
+        for (unsigned j = 0; j < bricksMatrix.size(); j++)
+            if (i!=j && bricksMatrix[i]->GetColor() == sf::Color::Magenta && bricksMatrix[j]->GetColor() == sf::Color::Magenta)
+                if ((fabs(bricksMatrix[i]->GetPosX() - (bricksMatrix[j]->GetPosX() + bricksMatrix[j]->GetWidth())) < abs(bricksMatrix[i]->GetSpeedX()))||
+                    (fabs(bricksMatrix[i]->GetPosX() + bricksMatrix[i]->GetWidth() - bricksMatrix[j]->GetPosX()) < abs(bricksMatrix[i]->GetSpeedX())))
+                    bricksMatrix[i]->SetSpeedX(-1);
 }
 
 bool Field::EndOfGame(void)

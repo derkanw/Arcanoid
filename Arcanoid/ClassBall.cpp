@@ -1,7 +1,7 @@
 #include <vector>
 #include <cmath>
 #include "ClassBall.h"
-#define DEFAULT_SPEED 10
+#define DEFAULT_SPEED 1
 #define CHANCE_OF_RANDOM 15
 
 Ball::Ball(float ballRadius, float posX, float posY)
