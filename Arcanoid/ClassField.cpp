@@ -1,9 +1,10 @@
 #include "ClassField.h"
 #define CHANCE 15
-#define CHANCE_OF_BONUS 50
+#define CHANCE_OF_BONUS 40
 #define MINUS_HEALTH -1
 
-Field::Field(float fieldWindowHeight, float fieldWindowWidth, unsigned numberBricksInRow, unsigned numberBricksInColumn, float offsetHeight)
+Field::Field(float fieldWindowHeight, float fieldWindowWidth, unsigned numberBricksInRow,
+    unsigned numberBricksInColumn, float offsetHeight) //constructor
 {
     height = fieldWindowHeight;
     width = fieldWindowWidth;
@@ -15,23 +16,23 @@ Field::Field(float fieldWindowHeight, float fieldWindowWidth, unsigned numberBri
     GenerateField();
 }
 
-void Field::SetBrickType(sf::Color& brickColor, int& brickHealth)
+void Field::SetBrickType(sf::Color& brickColor, int& brickHealth) //selection of the type of brick for its generation
 {
     switch (rand() % CHANCE)
     {
-    case 0:
+    case 0: //indestructible brick
     {
         brickColor = colorsMatrix[1];
         brickHealth = -1;
     }
         break;
-    case 1:
+    case 1: //accelerating brick
     {
         brickColor = colorsMatrix[2];
         brickHealth = 1;
     }
         break;
-    default:
+    default: //regular brick
     {
         brickColor = colorsMatrix[0];
         brickHealth = 1;
@@ -40,9 +41,10 @@ void Field::SetBrickType(sf::Color& brickColor, int& brickHealth)
     }
 }
 
-void Field::GenerateField(void)
+void Field::GenerateField(void) //generating a set of bricks
 {
-    float brickHeight = height / bricksInColumn, brickWidth = width / bricksInRow;
+    float brickHeight = height / bricksInColumn;
+    float brickWidth = width / bricksInRow;
     float posX = 0, posY = 0;
     sf::Color brickColor;
     int brickHealth;
@@ -57,9 +59,11 @@ void Field::GenerateField(void)
         }
 }
 
-int Field::DeleteBrick(unsigned number, float& bonusX, float& bonusY)
+int Field::DeleteBrick(unsigned number, float& bonusX, float& bonusY) /*
+decrease in health of the brick and its subsequent removal, if health is zero*/
 {
     bricksMatrix[number]->SetHealth(MINUS_HEALTH);
+
     if (bricksMatrix[number]->GetHealth() == 0)
     {
         if (rand() % 100 < CHANCE_OF_BONUS)
@@ -67,36 +71,48 @@ int Field::DeleteBrick(unsigned number, float& bonusX, float& bonusY)
             bonusX = bricksMatrix[number]->GetPosX() + bricksMatrix[number]->GetWidth() / 2;
             bonusY = bricksMatrix[number]->GetPosY() + bricksMatrix[number]->GetHeight();
         }
+
         if (bricksMatrix[number]->GetColor() == sf::Color::Magenta)
             numberMovingBricks -= 1;
         bricksMatrix.erase(bricksMatrix.begin() + number);
     }
+
     return 1;
 }
 
-void Field::MoveAllBricks(void)
+void Field::MoveAllBricks(void) //movement of bricks on the playing field
 {
     for (unsigned k = 0; k < bricksMatrix.size(); k++)
         bricksMatrix[k]->Move(width);
 }
 
-bool Field::CheckNewX(float posX, float posY)
+bool Field::CheckNewX(float posX, float posY) //checking the correctness of the created coordinates of the new brick
 {
+    float leftBoarder, rightBoarder, brickOut, brickPosY;
+
     for (unsigned k = 0; k < bricksMatrix.size(); k++)
-        if (bricksMatrix[k]->GetPosY() == posY)
-            if (posX - bricksMatrix[k]->GetPosX() && posX <= bricksMatrix[k]->GetPosX() + bricksMatrix[k]->GetWidth() || posX >= width - bricksMatrix[k]->GetWidth())
+    {
+        brickPosY = bricksMatrix[k]->GetPosY();
+        leftBoarder = bricksMatrix[k]->GetPosX() - bricksMatrix[k]->GetWidth();
+        rightBoarder = bricksMatrix[k]->GetPosX() + bricksMatrix[k]->GetWidth();
+        brickOut = width - bricksMatrix[k]->GetWidth();
+
+        if (brickPosY == posY)
+            if (posX >= leftBoarder && posX <= rightBoarder || posX >= brickOut)
                 return false;
+    }
+
     return true;
 }
 
-void Field::SetMovingBrick(void)
+void Field::SetMovingBrick(void) //adding a new moving brick to the field
 {
     float randomX;
     float y = offset + height*(float)1.03;
     float brickWidth = width / bricksInRow;
     float brickHeight = height / bricksInColumn;
 
-    if (numberMovingBricks < bricksInRow/2)
+    if (numberMovingBricks < bricksInRow / 2)
     {
         do
             randomX = (float)(rand() % (int)(width - brickWidth));
@@ -107,17 +123,36 @@ void Field::SetMovingBrick(void)
     }
 }
 
-void Field::BricksCollision(void)
+void Field::BricksCollision(void) //collision check of moving bricks with each other
 {
+    sf::Color brickColor1, brickColor2;
+    float leftSide1, rightSide1, leftSide2, rightSide2;
+    float speed;
+
+    bool sameType;
+
     for (unsigned i = 0; i < bricksMatrix.size(); i++)
+    {
+        brickColor1 = bricksMatrix[i]->GetColor();
+        leftSide1 = bricksMatrix[i]->GetPosX();
+        rightSide1 = bricksMatrix[i]->GetPosX() + bricksMatrix[i]->GetWidth();
+        speed = abs(bricksMatrix[i]->GetSpeedX());
+
         for (unsigned j = 0; j < bricksMatrix.size(); j++)
-            if (i!=j && bricksMatrix[i]->GetColor() == sf::Color::Magenta && bricksMatrix[j]->GetColor() == sf::Color::Magenta)
-                if ((fabs(bricksMatrix[i]->GetPosX() - (bricksMatrix[j]->GetPosX() + bricksMatrix[j]->GetWidth())) < abs(bricksMatrix[i]->GetSpeedX()))||
-                    (fabs(bricksMatrix[i]->GetPosX() + bricksMatrix[i]->GetWidth() - bricksMatrix[j]->GetPosX()) < abs(bricksMatrix[i]->GetSpeedX())))
-                    bricksMatrix[i]->SetSpeedX(-1);
+        {
+            brickColor2 = bricksMatrix[j]->GetColor();
+            leftSide2 = bricksMatrix[j]->GetPosX();
+            rightSide2 = bricksMatrix[j]->GetPosX() + bricksMatrix[j]->GetWidth();
+
+            sameType = (brickColor1 == sf::Color::Magenta) && (brickColor2 == sf::Color::Magenta);
+
+            if ((i != j) && sameType && ((abs(leftSide1 - rightSide2) < speed) || (abs(rightSide1 - leftSide2) < speed)))
+                bricksMatrix[i]->SetSpeedX(-1);
+        }
+    }
 }
 
-bool Field::EndOfGame(void)
+bool Field::EndOfGame(void) //if there are only red non-destructible bricks, then the end of the game
 {
     for (unsigned k = 0; k < bricksMatrix.size(); k++)
         if (bricksMatrix[k]->GetColor() != sf::Color::Red)
@@ -125,22 +160,17 @@ bool Field::EndOfGame(void)
     return true;
 }
 
-std::vector <std::shared_ptr<Brick>> Field::GetBricksMatrix(void)
-{
-    return bricksMatrix;
-}
-
-float Field::GetHeight(void)
-{
-    return height;
-}
-
-float Field::GetWidth(void)
+float Field::GetWidth(void) //returns the width of the field
 {
     return width;
 }
 
-void Field::DrawField(std::shared_ptr <sf::RenderWindow> window)
+std::vector <std::shared_ptr<Brick>> Field::GetBricksMatrix(void) //returns a set of bricks
+{
+    return bricksMatrix;
+}
+
+void Field::DrawField(std::shared_ptr <sf::RenderWindow> window) //draws all the bricks on the field
 {
     for (unsigned k = 0; k < bricksMatrix.size(); k++)
         bricksMatrix[k]->DrawBrick(window);

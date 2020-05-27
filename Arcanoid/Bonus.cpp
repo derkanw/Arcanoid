@@ -1,39 +1,46 @@
 #include "Bonus.h"
-#define CHANGE_NUM float(1.5)
+#define CHANGE_NUM (float)1.5
+#define BONUS_SPEED 1
+#define STICK_NUM 3
 
-Bonus::Bonus(float posX, float posY, sf::Color bonusColor, unsigned bonysType)
+Bonus::Bonus(float posX, float posY) //default constructor
 {
     radius = 5;
     x = posX;
     y = posY;
-    type = bonysType;
-    color = bonusColor;
 }
 
-bool Bonus::Move(float userWindowHeight, std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
+bool Bonus::Move(float userWindowHeight, std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)/*
+bonus movement in the field*/
 {
-    bool result = false;
-    y += 1;
-    if ((x + 2 * radius >= bar->GetPosX()) && (x <= bar->GetPosX() + bar->GetWidth()) && (y + 2 * radius >= bar->GetPosY()) && (y <= bar->GetPosY() + bar->GetHeight()))
+    float leftBoarder = bar->GetPosX() - 2 * radius;
+    float rightBoarder = bar->GetPosX() + bar->GetWidth();
+    float upperBoarder = bar->GetPosY() - 2 * radius;
+    float lowerBoarder = bar->GetPosY() + bar->GetHeight();
+    float bonusOut = userWindowHeight - BONUS_SPEED;
+
+    y += BONUS_SPEED;
+
+    if ((x >= leftBoarder) && (x <= rightBoarder) && (y >= upperBoarder) && (y <= lowerBoarder))
     {
         Trigger(bar, ball, field);
-        result = true;
+        return true;
     }
-    else if (y + 1 >= userWindowHeight)
-        result = true;
-    return result;
+    else if (y >= bonusOut)
+        return true;
+    return false;
 }
 
-void Bonus::DrawBonus(std::shared_ptr <sf::RenderWindow> window)
+void Bonus::DrawBonus(std::shared_ptr <sf::RenderWindow> window) //bonus drawing in the field
 {
     sf::CircleShape circle(radius);
-    circle.setFillColor(color);
+    circle.setFillColor(sf::Color::Yellow);
     circle.setPosition(x, y);
 
     window->draw(circle);
 }
 
-void ChangeBar::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
+void ChangeBar::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field) //resizes bar
 {
     switch (rand() % 2)
     {
@@ -48,7 +55,8 @@ void ChangeBar::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, 
     }
 }
 
-void ChangeBall::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
+void ChangeBall::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field) /*
+changes the speed of the ball*/
 {
     switch (rand() % 2)
     {
@@ -61,22 +69,26 @@ void ChangeBall::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball,
     }
 }
 
-void BallStick::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
+void BallStick::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field) /*
+ball sticking to the bar*/
 {
-    bar->SetBallStick(3);
+    bar->SetBallStick(STICK_NUM);
 }
 
-void BallBottom::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
+void BallBottom::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field) /*
+a bottom appears for a ball that works like a bar*/
 {
     ball->SetBallBottom(true);
 }
 
-void RandomPath::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
+void RandomPath::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field) /*
+change at any moment of the ball trajectory*/
 {
     ball->SetRandomPath(true);
 }
 
-void MovingBrickBonus::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field)
+void MovingBrickBonus::Trigger(std::shared_ptr <Bar> bar, std::shared_ptr <Ball> ball, std::shared_ptr <Field> field) /*
+the appearance of a moving block on the field*/
 {
     field->SetMovingBrick();
 }

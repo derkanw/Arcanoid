@@ -137,6 +137,7 @@
     <ClCompile Include="ClassBar.cpp" />
     <ClCompile Include="ClassBrick.cpp" />
     <ClCompile Include="ClassField.cpp" />
+    <ClCompile Include="GameLoop.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +146,7 @@
     <ClInclude Include="ClassBar.h" />
     <ClInclude Include="ClassBrick.h" />
     <ClInclude Include="ClassField.h" />
+    <ClInclude Include="GameLoop.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
