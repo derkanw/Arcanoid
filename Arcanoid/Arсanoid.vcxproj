@@ -146,6 +146,7 @@
     <ClInclude Include="ClassBar.h" />
     <ClInclude Include="ClassBrick.h" />
     <ClInclude Include="ClassField.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="GameLoop.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -10,18 +10,7 @@
 class GameLoop //class of the gameplay
 {
 private:
-    float userWindowWidth, userWindowHeight;
     int score;
-
-    float fieldWindowHeight, fieldWindowWidth;
-    float offsetHeight;
-    unsigned numberBricksInRow, numberBricksInColumn;
-
-    float ballRadius;
-    float ballX, ballY;
-
-    float barHeight, barWidth;
-    float barX, barY = ballY;
 
     std::shared_ptr <sf::RenderWindow> window;
     std::shared_ptr <Field> field;

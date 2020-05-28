@@ -129,7 +129,7 @@ void Field::BricksCollision(void) //collision check of moving bricks with each o
     float leftSide1, rightSide1, leftSide2, rightSide2;
     float speed;
 
-    bool sameType;
+    bool sameType, leftCollision, rightCollision;
 
     for (unsigned i = 0; i < bricksMatrix.size(); i++)
     {
@@ -145,8 +145,10 @@ void Field::BricksCollision(void) //collision check of moving bricks with each o
             rightSide2 = bricksMatrix[j]->GetPosX() + bricksMatrix[j]->GetWidth();
 
             sameType = (brickColor1 == sf::Color::Magenta) && (brickColor2 == sf::Color::Magenta);
+            leftCollision = abs(leftSide1 - rightSide2) < speed;
+            rightCollision = abs(rightSide1 - leftSide2) < speed;
 
-            if ((i != j) && sameType && ((abs(leftSide1 - rightSide2) < speed) || (abs(rightSide1 - leftSide2) < speed)))
+            if ((i != j) && sameType && (leftCollision || rightCollision))
                 bricksMatrix[i]->SetSpeedX(-1);
         }
     }

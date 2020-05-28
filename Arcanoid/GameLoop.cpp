@@ -1,35 +1,17 @@
 #include "GameLoop.h"
 #include "ClassBrick.h"
-#define INCREASE_SPEED (float)1.5
-#define BONUS_NUMBER 6
+#include "Constants.h"
 
 GameLoop::GameLoop(void) //constructor
 {
-    userWindowWidth = 500;
-    userWindowHeight = 600;
     score = 0;
 
-    fieldWindowWidth = userWindowWidth;
-    fieldWindowHeight = 2 * userWindowHeight / 5;
-    offsetHeight = userWindowHeight / 10;
-    numberBricksInRow = 6;
-    numberBricksInColumn = 3;
+    window = std::make_shared<sf::RenderWindow>(sf::VideoMode((unsigned)USER_WINDOW_WIDTH, (unsigned)USER_WINDOW_HEIGHT), "Arcanoid");
+    window->setFramerateLimit(FRAME_RATE);
 
-    ballRadius = userWindowWidth / 40;
-    ballX = userWindowWidth / 2 - ballRadius;
-    ballY = 17 * userWindowHeight / 20;
-
-    barHeight = userWindowHeight / 40;
-    barWidth = userWindowWidth / 4;
-    barX = ballX - barWidth / 2 + ballRadius;
-    barY = ballY + 2 * ballRadius;
-
-    window = std::make_shared<sf::RenderWindow>(sf::VideoMode((unsigned)userWindowWidth, (unsigned)userWindowHeight), "Arcanoid");
-    window->setFramerateLimit(100);
-
-    field = std::make_shared<Field>(fieldWindowHeight, fieldWindowWidth, numberBricksInRow, numberBricksInColumn, offsetHeight);
-    bar = std::make_shared <Bar>(barHeight, barWidth, barX, barY);
-    ball = std::make_shared <Ball>(ballRadius, ballX, ballY);
+    field = std::make_shared<Field>(FIELD_WINDOW_HEIGHT, FIELD_WINDOW_WIDTH, NUMBER_BRICKS_IN_ROW, NUMBER_BRICKS_IN_COLUMN, OFFSET_HEIGHT);
+    bar = std::make_shared <Bar>(BAR_HEIGHT, BAR_WIDTH, BAR_X, BAR_Y);
+    ball = std::make_shared <Ball>(BALL_RADIUS, BALL_X, BALL_Y);
 }
 
 void GameLoop::StickingWork(void) //implements the work of sticking the ball to the bar
@@ -99,15 +81,15 @@ and the loss of the bonus when removing the bricks*/
 
 void GameLoop::AllMovement(void) //implements all the movement in the gameplay
 {
-    bar->Move(userWindowWidth);
+    bar->Move(USER_WINDOW_WIDTH);
     field->MoveAllBricks();
-    ball->Move(bar, userWindowWidth);
+    ball->Move(bar, USER_WINDOW_WIDTH);
 }
 
 void GameLoop::AllColisions(void) //checks all collisions in the gameplay
 {
-    score += ball->BallOut(userWindowHeight, bar);
-    ball->CollisionWithWindow(userWindowWidth, offsetHeight);
+    score += ball->BallOut(USER_WINDOW_HEIGHT, bar);
+    ball->CollisionWithWindow(USER_WINDOW_WIDTH, OFFSET_HEIGHT);
     StickingWork();
     CollisionWithBricks();
     field->BricksCollision();
@@ -149,7 +131,7 @@ void GameLoop::BonusesWork(void) //bonus life cycle with drawing, movement and h
     for (unsigned k = 0; k < bonusesMatrix.size(); k++)
     {
         bonusesMatrix[k]->DrawBonus(window);
-        if (bonusesMatrix[k]->Move(userWindowHeight, bar, ball, field))
+        if (bonusesMatrix[k]->Move(USER_WINDOW_HEIGHT, bar, ball, field))
         {
             bonusesMatrix.erase(bonusesMatrix.begin() + k);
             break;
@@ -164,8 +146,8 @@ void GameLoop::CreateText(void) //displays the score
 
     sf::Text text;
     text.setFont(font);
-    text.setCharacterSize((unsigned)userWindowHeight / 20);
-    text.setPosition(userWindowWidth / 50, userWindowHeight / 30);
+    text.setCharacterSize((unsigned)TEXT_SIZE);
+    text.setPosition(TEXT_X, TEXT_Y);
     text.setString("Score: " + std::to_string(score));
 
     window->draw(text);
@@ -181,8 +163,8 @@ void GameLoop::End(void) //if the game is over
         else
             texture.loadFromFile("Resources/lose.png");
 
-        sf::RectangleShape shape(sf::Vector2f(userWindowWidth, fieldWindowHeight));
-        shape.setPosition(0, offsetHeight);
+        sf::RectangleShape shape(sf::Vector2f(USER_WINDOW_WIDTH, FIELD_WINDOW_HEIGHT));
+        shape.setPosition(0, OFFSET_HEIGHT);
         shape.setTexture(&texture);
 
         window->draw(shape);
